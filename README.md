@@ -5,7 +5,7 @@ Clone Repositório
 
 ```sh
 
-git clone https://github.com/Matheus-O-Silva/Laravel-payment-project.git
+git clone https://github.com/Matheus-O-Silva/Laravel-Survey-Project.git
 ```
 
 ```sh

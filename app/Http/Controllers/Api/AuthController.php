@@ -44,7 +44,7 @@ class AuthController extends Controller
                 );
         }
 
-        return new JsonResponse($user, Response::HTTP_CREATED);
+        return new JsonResponse([$registerRequest['user'], $registerRequest['token']], Response::HTTP_CREATED);
     }
 
     /**

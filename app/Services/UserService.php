@@ -35,46 +35,29 @@ class UserService
      * Register new User
      *
      * @throws \Exception
-     * @return \App\Http\Resources\UserResource
+     * @return Array
      */
-    public function store(RegisterRequest $registerRequest): UserResource
+    public function store(RegisterRequest $registerRequest)
     {
         try{
             DB::beginTransaction();
 
             $user = $this->userRepository->create([
                 'name'           => $registerRequest->name,
-                'role_id'        => $registerRequest->role_id == 'Comum' ? 2 : 1,
-                'documentType'   => $registerRequest->documentType,
-                'documentNumber' => $registerRequest->documentNumber,
                 'email'          => $registerRequest->email,
                 'device_number'  => $registerRequest->device_number,
-                'password'       => Hash::make($registerRequest->password)
+                'password'       => bcrypt($registerRequest->password)
             ]);
-
-            $sendMoneyPermission    = Permission::where('name','send_money')->first();
-            $receiveMoneyPermission = Permission::where('name','receive_money')->first();
-
-            if($registerRequest->role_id == 'Comum'){
-                $user->permissions()->attach([$sendMoneyPermission->id, $receiveMoneyPermission->id]);
-            }
-
-            if($registerRequest->role_id == 'Lojista'){
-                $user->permissions()->attach([$receiveMoneyPermission->id]);
-            }
-
-            Balance::create([
-                'user_id' => $user->id,
-                'amount'  => 0.00
-            ]);
-
             DB::commit();
+
+            $token = $user->createToken('main')->plainTextToken;
+
         }catch(Exception $e){
             Log::error($e->getMessage());
             DB::rollback();
         }
 
-        return new UserResource($user);
+        return ['user' => $user,'token' => $token];
     }
 
     /**

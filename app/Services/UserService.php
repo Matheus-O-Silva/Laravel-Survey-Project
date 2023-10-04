@@ -50,14 +50,14 @@ class UserService
             ]);
             DB::commit();
 
-            $token = $user->createToken('main')->plainTextToken;
+            $user->token = $user->createToken('main')->plainTextToken;
 
         }catch(Exception $e){
             Log::error($e->getMessage());
             DB::rollback();
         }
 
-        return ['user' => $user,'token' => $token];
+        return $user;
     }
 
     /**

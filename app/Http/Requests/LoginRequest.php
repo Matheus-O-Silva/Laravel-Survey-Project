@@ -24,9 +24,9 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
+            'email' => 'required|email|string|exists:users,email',
             'password' => 'required',
-            'device_name' => 'required',
+            'remember' => 'boolean',
         ];
     }
 }

@@ -64,13 +64,15 @@ class UserService
      * Authenticate a user
      *
      * @throws \Exception
-     * @return \App\Http\Resources\UserResource
+     * @return object
      */
-    public function authenticate(LoginRequest $loginRequest): UserResource
+    public function authenticate(LoginRequest $loginRequest) : object
     {
         $user = User::where('email', $loginRequest->email)->first();
 
-        if (! $user || ! Hash::check($loginRequest->password, $user->password)) {
+        $remember = $loginRequest->remeber ?? false;
+
+        if (! $user || ! Hash::check($loginRequest->password, $user->password) || $remember) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
@@ -80,7 +82,9 @@ class UserService
             $user->tokens()->delete();
         }
 
-        return new UserResource([$user->createToken($loginRequest->device_name)->plainTextToken]);
+        $user->token = $user->createToken('main')->plainTextToken;
+
+        return $user;
     }
 
     /**

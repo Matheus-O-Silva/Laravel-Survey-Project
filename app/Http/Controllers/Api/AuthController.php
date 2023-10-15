@@ -56,16 +56,7 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $loginRequest) : JsonResponse
     {
-        try {
-            $user = $this->userService->authenticate($loginRequest);
-        } catch (\Throwable $e) {
-            Log::error($e->getMessage());
-            return response()
-                ->json(
-                    'cannot.perform.your.action.try.again.later',
-                    Response::HTTP_INTERNAL_SERVER_ERROR
-                );
-        }
+        $user = $this->userService->authenticate($loginRequest);
 
         return new JsonResponse($user, Response::HTTP_OK);
     }

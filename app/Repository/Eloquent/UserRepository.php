@@ -82,9 +82,9 @@ class UserRepository implements UserRepositoryInterface
      * @param $documentNumber
      * @return Array
      */
-    public function find(string $documentNumber): ?object
+    public function find(string $id): ?object
     {
-        return $this->user->where('documentNumber',$documentNumber)->first();
+        return $this->user->where('id',$id)->first();
     }
 
     /**
@@ -102,23 +102,7 @@ class UserRepository implements UserRepositoryInterface
 
         return $user;
     }
-
-    /**
-     * select a user by id
-     *
-     * @param $id
-     * @return Collection
-     */
-    public function findByDocumentNumber($documentNumber): Collection
-    {
-        $user = $this->user->where('documentNumber',$documentNumber);
-        if(!$user){
-            throw new Exception("User Not Found", 1);
-        }
-
-        return $user;
-    }
-
+    
     /**
      * returns registers with re Attributes
      *
@@ -128,23 +112,5 @@ class UserRepository implements UserRepositoryInterface
     public function selectRelationAtribbutes($attributes) : Object
     {
        return $this->user->with($attributes)->get();
-    }
-
-    public function hasRole(string $documentNumber, String $role): bool
-    {
-        return $this->user->role()->where('documentNumber', $documentNumber)->where('name', $role)->exists();
-    }
-
-    public function hasPermissions(string $documentNumber, Array $permissions): bool
-    {
-        $userPermissions = $this->user->permissions()->where('documentNumber', $documentNumber)->pluck('name')->toArray();
-
-        foreach ($permissions as $permission) {
-            if (!in_array($permission, $userPermissions)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

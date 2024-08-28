@@ -6,6 +6,8 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         restart: unless-stopped
         working_dir: /var/www/
         volumes:
@@ -32,10 +34,10 @@ services:
         image: mysql:5.7.22
         restart: unless-stopped
         environment:
-            MYSQL_DATABASE: ${DB_DATABASE:-laravel}
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
-            MYSQL_PASSWORD: ${DB_PASSWORD:-userpass}
-            MYSQL_USER: ${DB_USERNAME:-username}
+            MYSQL_DATABASE: ${survey:-laravel}
+            MYSQL_ROOT_PASSWORD: 'root'
+            MYSQL_PASSWORD: 'root'
+            MYSQL_USER: 'root'
         volumes:
             - ./.docker/mysql/dbdata:/var/lib/mysql
         ports:
